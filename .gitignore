@@ -1,0 +1,29 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+!gradle/wrapper/*
+
+# Build Files
+build/
+target/
+*.class
+
+# MacOS Files
+.DS_Store
+
+# Windows Files
+thumbs.db
+
+# Eclipse
+.settings/
+classes/
+.classpath
+.project
+
+# Project
+*.jar
+src/main/resources/graphics/generated
+.*.swp

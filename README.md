@@ -1,37 +1,42 @@
-# Open Source Micropolis, based on the original SimCity Classic from Maxis, by Will Wright. #
+========================================================================
 
-This is the source code for Micropolis (based on [SimCity](http://en.wikipedia.org/wiki/SimCity_(1989_video_game))), released under the GPL. Micropolis is based on the original SimCity from Electronic Arts / Maxis, and designed and written by Will Wright.
+# MicropolisJ (Micropolis in Java)
 
-## [Description](../wiki/Description.md) ##
-A description of the Micropolis project source code release.
+========================================================================
 
-## [News](../wiki/News.md) ##
-The latest news about recent development.
+MicropolisJ is Micropolis for the Java platform.
+Copyright (C) 2013 Jason Long (jason@long.name).
+Portions Copyright (C) 1989-2007 Electronic Arts Inc.
 
-## [DevelopmentPlan](../wiki/DevelopmentPlan.md) ##
-The development plan, and a high level description of tasks that need to be done.
+MicropolisJ is based on Micropolis, Unix version, which was developed by
+Don Hopkins (dhopkins@DonHopkins.com, http://www.DonHopkins.com) for
+DUX Software under license from Maxis, in or around 1990.  This version
+was later modified for inclusion in the One Laptop Per Child (OLPC)
+program, and released as free and open source software under the GPL in
+2008.
+Copyright (C) 1989-2007 Electronic Arts Inc.
 
-## [ThePlan](../wiki/ThePlan.md) ##
-Older development plan for the TCL/Tk version of Micropolis and the C++/Python version too.
+The original Micropolis game was designed and implemented by Will Wright.
+Copyright (C) 2002 by Electronic Arts.
 
-## [Assets](../wiki/Assets.md) ##
-List of art and text assets, and work that needs to be done for Micropolis.
+========================================================================
 
-## Documentation ##
+How to Run This Program
+-----------------------
 
-This is the old documentation of the HyperLook version of SimCity, converted to wiki text.
-It needs to be brought up to date and illustrated.
+First of all, you must have Java (version 8 or better) installed on your computer. You can get Java at http://java.com/download.
 
-  * [Introduction](../wiki/Introduction.md)
-  * [Tutorial](../wiki/Tutorial.md)
-  * [User Reference](../wiki/UserReference.md)
-  * [Inside The Simulator](../wiki/InsideTheSimulator.md)
-  * [History Of Cities And City Planning](../wiki/History.md)
-  * [Bibliography](../wiki/Bibliography.md)
-  * [Credits](../wiki/Credits.md)
+Next, simply download the latest release from the releases page for your OS. Once it is downloaded double-click the file to
+ run the program.
 
-## [License](../wiki/License.md) ##
-The Micropolis GPL license.
 
-## Tools ##
-[![](http://wingware.com/images/coded-with-logo-129x66.png)](http://wingware.com/)
+How to Build This Program from Source
+-------------------------------------
+
+to build simply navigate to the root directory of the project containing the `build.gradle` file and then execute the command
+ `gradle build` or `gradlew build`.
+
+See the LICENSE file for the full text copy of the GNU General Public License.
+
+========================================================================
+

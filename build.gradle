@@ -1,0 +1,139 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-ospackage-plugin:8.1.0' // https://plugins.gradle.org/plugin/nebula.ospackage
+        classpath 'edu.sc.seis.gradle:launch4j:2.4.6' // https://plugins.gradle.org/plugin/edu.sc.seis.launch4j
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'distribution'
+apply plugin: 'edu.sc.seis.launch4j'
+apply plugin: 'nebula.ospackage'
+
+// Common Configuration //
+rootProject.version='1.4.0'
+targetCompatibility='1.8'
+
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = targetCompatibility = '1.8'
+        options.compilerArgs << '-Xlint:deprecation'
+        options.compilerArgs << '-Xlint:unchecked'
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        jcenter()
+    }
+
+    configurations {
+        provided
+        compile.extendsFrom provided
+    }
+}
+
+// 'cleanIdea' task extension //
+cleanIdea.doFirst {
+    delete project.name + '.iws'
+    delete 'out'
+    followSymLinks = true
+}
+
+//gradle.taskGraph.whenReady { graph ->
+//    if (graph.hasTask('makeTiles')) {
+//        System.setProperty('tile_size', '16')
+//    }
+//}
+//
+//task makeTiles(type: JavaExec) {
+//    classpath = sourceSets.main.runtimeClasspath
+//
+//    main = 'micropolisj.buildTool.MakeTiles'
+//
+//    // arguments to pass to the application
+//    args 'src/main/resources/graphics/tiles.rc'
+//    args '/8x8'
+//}
+
+subprojects.each { subproject ->
+    evaluationDependsOn(subproject.path)
+}
+
+// All in one JAR file //
+jar {
+    // Add dependencies
+    def deps = []
+
+    subprojects.each { subproject ->
+        from subproject.sourceSets.main.output.classesDirs
+        from subproject.sourceSets.main.output.resourcesDir
+        deps += subproject.configurations.runtime - subproject.configurations.provided
+    }
+    subprojects.each { subproject ->
+        deps -= subproject.jar.archivePath
+    }
+    deps = deps.unique().collect { it.isDirectory() ? it : zipTree(it) }
+    from deps
+
+    manifest {
+        attributes 'Main-Class': 'micropolisj.Main',
+            'SplashScreen-Image': 'src/main/resources/micropolisj.png',
+            'Micropolis-Version': project.version
+    }
+
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+}
+
+// Java executable wrapper for Windows //
+launch4j {
+    createExe.dependsOn 'jar'
+
+    version = textVersion = project.version
+    fileDescription = productName = 'Micropolis'
+    errTitle 'Micropolis Windows Wrapper'
+    copyright 'Micropolis (C) 2020'
+    fileDescription = 'Micropolis, the original city simulator'
+    icon projectDir.path + '/src/main/resources/images/micropolisj.ico'
+}
+
+// Distributions for OSX and Windows //
+distributions {
+    osx.contents {
+        into('Micropolis.app/Contents') {
+            from('src/macos/resources') {
+                include 'Info.plist'
+                expand VERSION: project.version,
+//                        JAR: file(proguard.outJarFiles[0]).name
+                        JAR: jar
+            }
+        }
+        into('Micropolis.app/Contents/MacOS') {
+            from('src/macos/resources') {
+                include 'universalJavaApplicationStub.sh'
+                fileMode 0755
+            }
+        }
+        into('Micropolis.app/Contents/Resources/Java') {
+            from jar
+        }
+        from 'LICENSE', 'README.md.md'
+    }
+    windows.contents {
+        from 'build/launch4j/micropolis.exe'
+        from 'LICENSE', 'README.md.md'
+    }
+
+    installWindowsDist.dependsOn createExe
+    windowsDistTar.dependsOn createExe
+    windowsDistZip.dependsOn createExe
+
+    installOsxDist.dependsOn 'jar'
+    osxDistTar.dependsOn 'jar'
+    osxDistZip.dependsOn 'jar'
+}
